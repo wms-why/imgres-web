@@ -1,14 +1,18 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 import React, { useState, useRef, useEffect } from "react";
-import { resizeByAlgorithm } from "../utils/resize";
 import Image from "next/image";
+import { TrashIcon } from "@heroicons/react/24/outline";
+import { resize, resizeFree } from "../api/resize";
+import { StoreApi } from "zustand";
+import { Store } from "../Context";
+import { UseBoundStore } from "zustand/react";
 
 interface Size {
   input: number;
+  scale: number;
   width: number;
   height: number;
-  imgSrc: string;
   needAI: boolean;
   useAI: boolean;
 }
@@ -50,17 +54,21 @@ const aspectRatioTemplates = [
 
 const sizeTemplates = [24, 32, 48, 64, 96, 128, 256, 512].map((e) => ({
   input: e,
+  scale: 0,
   width: 0,
   height: 0,
-  imgSrc: "",
+  imgSrc: null,
   needAI: false,
   useAI: false,
   selected: false,
 }));
 
-const ImageResizer = () => {
+const ImageResizer = ({ useStore }: {
+  useStore: UseBoundStore<StoreApi<Store>>
+}) => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [selectImageErrorShow, setSelectImageErrorShow] = useState(false);
+  const [submitErrorShow, setSubmitErrorShow] = useState(false);
   const [resizeMode, setResizeMode] = useState<"width" | "height">("width");
   const [sizes, setSizes] = useState<DefaultSize[]>(sizeTemplates);
   const [customSizes, setCustomSizes] = useState<Size[]>([]);
@@ -77,25 +85,25 @@ const ImageResizer = () => {
 
   const calcSize = (size: number) => {
     if (!imageInfo) {
-      return { width: 0, height: 0 };
+      return { width: 0, height: 0, scale: 0 };
     }
 
     const aps = imageInfo?.aspectRatioNumber;
     if (resizeMode == "width") {
-      return { width: size, height: size / aps };
+      return { width: size, height: size / aps, scale: size / imageInfo.width };
     } else {
-      return { width: size * aps, height: size };
+      return { width: size * aps, height: size, scale: size / imageInfo.height };
     }
   };
   const initSize = (size: number) => {
-    const { width, height } = calcSize(size);
+    const { width, height, scale } = calcSize(size);
     const s = {
       input: size,
+      scale,
       width,
       height,
       needAI: Boolean(false),
       useAI: false,
-      imgSrc: "",
     } satisfies Size;
 
     s.needAI = needAI(s);
@@ -166,7 +174,7 @@ const ImageResizer = () => {
           <>
             <span
               className="text-gray-500 cursor-pointer text-xl font-bold"
-              title="you can click to toogle free to resize it to your choosed size"
+              title="need login, you can click to toogle free to resize it to your choosed size"
               onClick={() => {
                 size.useAI = true;
                 freshSizesDisplay();
@@ -190,12 +198,11 @@ const ImageResizer = () => {
   };
   const freshSizesDisplay = () => {
     sizes.forEach((e) => {
-      const { width, height } = calcSize(e.input);
+      const { width, height, scale } = calcSize(e.input);
       e.width = width;
       e.height = height;
-
+      e.scale = scale;
       e.needAI = needAI(e);
-
       if (!e.needAI) {
         e.useAI = false;
       }
@@ -203,9 +210,10 @@ const ImageResizer = () => {
     setSizes([...sizes]);
 
     customSizes.forEach((e) => {
-      const { width, height } = calcSize(e.input);
+      const { width, height, scale } = calcSize(e.input);
       e.width = width;
       e.height = height;
+      e.scale = scale;
       e.needAI = needAI(e);
       if (!needAI(e)) {
         e.useAI = false;
@@ -218,7 +226,7 @@ const ImageResizer = () => {
   useEffect(() => {
     freshSizesDisplay();
 
-    return () => {};
+    return () => { };
   }, [imageInfo, resizeMode]);
 
   const handleImageSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -233,6 +241,7 @@ const ImageResizer = () => {
           const aspectRatio = img.width / img.height;
 
           const o = {
+            image: img,
             blob: file,
             width: img.width,
             height: img.height,
@@ -249,22 +258,54 @@ const ImageResizer = () => {
     }
   };
 
+  const setShowLoginPanel = useStore((state) => state.setShowLoginPanel);
   const submit = async () => {
+
+    setSubmitErrorShow(false);
+
     if (!imageInfo) {
       setSelectImageErrorShow(true);
 
       return;
     }
 
-    // const b = imageInfo?.blob!;
+    // 将total中的imgSrc打包到zip中下载
 
-    // Promise.all(sizes.map(async e => {
-    //   const url = await resizeByAlgorithm(b, e.width, e.height);
-    //   e.imgSrc = url;
-    // }))
+    const b = imageInfo?.blob;
 
-    console.log(sizes);
-    console.log(customSizes);
+    const total = [...sizes.filter((e) => e.selected), ...customSizes].map(e => ({ "scale": e.scale, "use_ai": e.useAI }));
+
+    let allfree = true;
+    total.forEach(e => {
+      if (e.use_ai) {
+        allfree = false;
+      }
+    });
+
+    const res = allfree ? await resizeFree(b, imageInfo.width, imageInfo.height, total) : await resize(b, imageInfo.width, imageInfo.height, total);
+
+    if (res.status == 200) {
+      // 下载zip文件
+      res.blob().then((blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "images.zip";
+        a.click();
+        window.URL.revokeObjectURL(url);
+      });
+    } else {
+
+      if (res.status == 401) {
+        setShowLoginPanel(true);
+        return;
+      }
+
+      setSubmitErrorShow(true);
+      res.text().then(r => {
+        console.error(`Image Process Error, status = ${res.status}, message = ${r}`);
+      })
+    }
   };
 
   return (
@@ -278,7 +319,7 @@ const ImageResizer = () => {
           <div className="flex flex-col items-center gap-4">
             <input
               type="file"
-              accept="image/*"
+              accept="image/png,image/jpeg,image/webp"
               onChange={handleImageSelect}
               className="hidden"
               ref={fileInputRef}
@@ -327,21 +368,19 @@ const ImageResizer = () => {
             <div className="flex gap-4">
               <button
                 onClick={() => setResizeMode("width")}
-                className={`px-4 py-2 rounded-full border ${
-                  resizeMode === "width"
-                    ? "bg-black text-white"
-                    : "border-gray-300 hover:border-gray-400"
-                }`}
+                className={`px-4 py-2 rounded-full border ${resizeMode === "width"
+                  ? "bg-black text-white"
+                  : "border-gray-300 hover:border-gray-400"
+                  }`}
               >
                 Depend On Width
               </button>
               <button
                 onClick={() => setResizeMode("height")}
-                className={`px-4 py-2 rounded-full border ${
-                  resizeMode === "height"
-                    ? "bg-black text-white"
-                    : "border-gray-300 hover:border-gray-400"
-                }`}
+                className={`px-4 py-2 rounded-full border ${resizeMode === "height"
+                  ? "bg-black text-white"
+                  : "border-gray-300 hover:border-gray-400"
+                  }`}
               >
                 Depend On Height
               </button>
@@ -358,17 +397,17 @@ const ImageResizer = () => {
                     size.selected = !size.selected;
                     setSizes([...sizes]);
                   }}
-                  className={`w-96 px-4 py-2 border rounded-lg transition-all ${
-                    size.selected
-                      ? "bg-black text-white border-black"
-                      : "border-gray-300 hover:border-gray-400"
-                  }`}
+                  className={`w-96 px-4 py-2 border rounded-lg transition-all ${size.selected
+                    ? "bg-black text-white border-black"
+                    : "border-gray-300 hover:border-gray-400"
+                    }`}
                 >
                   {`${size.input}px`}
                 </button>
 
-                <div>{formatPixes(size)}</div>
-                <div>{formatFreeTag(size)}</div>
+                <div className="w-96 text-center">{formatPixes(size)}</div>
+                <div className="w-36 text-center">{formatFreeTag(size)}</div>
+                <div className="h-6 w-6 "></div>
               </div>
             ))}
           </div>
@@ -388,16 +427,7 @@ const ImageResizer = () => {
             </h3>
 
             {customSizes.map((size, index) => (
-              <div key={index} className="flex justify-around ">
-                <button
-                  onClick={() => {
-                    customSizes.splice(index, 1);
-                    setCustomSizes([...customSizes]);
-                  }}
-                  className="px-4 py-2 border rounded-lg transition-all border-gray-300 hover:border-gray-400"
-                >
-                  remove
-                </button>
+              <div key={index} className="flex justify-around py-2">
                 <input
                   type="number"
                   value={size.input}
@@ -418,8 +448,16 @@ const ImageResizer = () => {
                   max="2048"
                   className="w-96 px-4 py-2 border rounded-lg transition-all border-gray-300 hover:border-gray-400"
                 />
-                <div>{formatPixes(size)}</div>
-                <div>{formatFreeTag(size)}</div>
+                <div className="w-96 text-center">{formatPixes(size)}</div>
+                <div className="w-36 text-center">{formatFreeTag(size)}</div>
+
+                <TrashIcon
+                  onClick={() => {
+                    customSizes.splice(index, 1);
+                    setCustomSizes([...customSizes]);
+                  }}
+                  className="h-6 w-6 text-gray-500 hover:text-gray-700 cursor-pointer"
+                />
               </div>
             ))}
           </div>
@@ -431,9 +469,16 @@ const ImageResizer = () => {
           >
             Start Process
           </button>
+          <div className="w-full sm:w-auto text-center text-stone-400">* AI Need Login</div>
           {selectImageErrorShow && (
             <div className="text-red-500 text-xl text-center">
               please upload an image first
+            </div>
+          )}
+
+          {submitErrorShow && (
+            <div className="text-red-500 text-xl text-center">
+              Image Process Error, Please Contact the Author
             </div>
           )}
         </div>
