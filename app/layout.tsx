@@ -23,7 +23,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${inter.className} w-full min-h-screen`}>
 
-        <Context children={children}></Context>
+        <Context children={children} />
 
       </body>
     </html>
