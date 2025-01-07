@@ -1,27 +1,24 @@
 'use client';
 
-import React, { use, useEffect } from 'react';
-import { UseBoundStore, StoreApi } from 'zustand';
-import { Store } from '../Context';
-import { decodeFromCache } from './LoginPanel';
+import React, { useEffect } from 'react';
+import { loadFromCache } from './LoginPanel';
+import { loginStore } from '@/store/LoginStore';
 
-const LoginButton = ({ useStore }: {
-  useStore: UseBoundStore<StoreApi<Store>>
-}) => {
+const LoginButton = () => {
 
 
-  const setShowLoginPanel = useStore((state) => state.setShowLoginPanel);
-  const isLogin = useStore((state) => state.isLogin);
-  const setIsLogin = useStore((state) => state.setIsLogin);
-  const setUsername = useStore((state) => state.setUsername);
-  const username = useStore((state) => state.username);
+  const setShowLoginPanel = loginStore((state) => state.setShowLoginPanel);
+  const isLogin = loginStore((state) => state.isLogin);
+  const setUsername = loginStore((state) => state.setUsername);
+  const username = loginStore((state) => state.username);
+  const setToken = loginStore((state) => state.setToken);
 
   useEffect(() => {
-    const username = decodeFromCache();
+    const loadResult = loadFromCache();
 
-    if (username) {
-      setIsLogin(true);
-      setUsername(username);
+    if (loadResult) {
+      setUsername(loadResult.username);
+      setToken(loadResult.token);
       setShowLoginPanel(false);
     }
   }, [])
@@ -31,7 +28,7 @@ const LoginButton = ({ useStore }: {
   };
 
   const handleLogout = () => {
-    setIsLogin(false);
+    setUsername("");
   };
 
   return (

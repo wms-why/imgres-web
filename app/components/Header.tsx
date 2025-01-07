@@ -1,11 +1,7 @@
 import React from 'react';
 import LoginButton from './LoginButton';
-import { UseBoundStore, StoreApi } from 'zustand';
-import { Store } from '../Context';
 
-const Header = ({ useStore }: {
-  useStore: UseBoundStore<StoreApi<Store>>
-}) => {
+const Header = () => {
 
   return (
     <header className="fixed top-0 w-full bg-black/80 backdrop-blur-md z-50">
@@ -17,7 +13,7 @@ const Header = ({ useStore }: {
           <div className="hidden md:flex items-center space-x-8">
             <a href="#features" className="text-gray-300 hover:text-white transition-colors">Features</a>
             <a href="#faq" className="text-gray-300 hover:text-white transition-colors">FAQ</a>
-            <LoginButton useStore={useStore} />
+            {/* <LoginButton /> */}
           </div>
         </div>
       </nav>

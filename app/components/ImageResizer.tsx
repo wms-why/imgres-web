@@ -4,9 +4,7 @@ import React, { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import { TrashIcon } from "@heroicons/react/24/outline";
 import { resize, resizeFree } from "../api/resize";
-import { StoreApi } from "zustand";
-import { Store } from "../Context";
-import { UseBoundStore } from "zustand/react";
+import { loginStore } from "@/store/LoginStore";
 
 interface Size {
   input: number;
@@ -63,9 +61,7 @@ const sizeTemplates = [24, 32, 48, 64, 96, 128, 256, 512].map((e) => ({
   selected: false,
 }));
 
-const ImageResizer = ({ useStore }: {
-  useStore: UseBoundStore<StoreApi<Store>>
-}) => {
+const ImageResizer = () => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [selectImageErrorShow, setSelectImageErrorShow] = useState(false);
   const [submitErrorShow, setSubmitErrorShow] = useState(false);
@@ -258,7 +254,7 @@ const ImageResizer = ({ useStore }: {
     }
   };
 
-  const setShowLoginPanel = useStore((state) => state.setShowLoginPanel);
+  const setShowLoginPanel = loginStore((state) => state.setShowLoginPanel);
   const submit = async () => {
 
     setSubmitErrorShow(false);
