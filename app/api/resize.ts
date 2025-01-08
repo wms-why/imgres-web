@@ -1,4 +1,4 @@
-import { CACHE_NAME } from "../components/LoginPanel";
+import { TOKEN_CACHE_NAME } from "../components/LoginPanel";
 import { base_url } from "./base";
 
 export async function resize(
@@ -13,7 +13,7 @@ export async function resize(
   body.append("height", height.toString());
   body.append("sizes", JSON.stringify(sizes));
 
-  const token = localStorage.getItem(CACHE_NAME);
+  const token = localStorage.getItem(TOKEN_CACHE_NAME);
   return fetch(`${base_url}/resize`, {
     method: "POST",
     headers: {

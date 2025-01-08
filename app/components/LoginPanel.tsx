@@ -12,17 +12,17 @@ function decode(credential: string) {
   return null;
 }
 
-export const CACHE_NAME = "token";
+export const TOKEN_CACHE_NAME = "token";
 export function loadFromCache() {
 
-  const token = localStorage?.getItem(CACHE_NAME);
+  const token = localStorage?.getItem(TOKEN_CACHE_NAME);
   if (token) {
     const decoded = jwt.decode(token) as { exp: number };
     // 检查decoded是否过期
     const currentTime = Math.floor(Date.now() / 1000);
 
     if (decoded.exp < currentTime) {
-      localStorage?.removeItem(CACHE_NAME);
+      localStorage?.removeItem(TOKEN_CACHE_NAME);
     } else {
       let username = (decoded as jwt.JwtPayload).name as string;
       if (username) {
@@ -49,7 +49,7 @@ export default function LoginPanel() {
     const { credential } = credentialResponse;
     let username = decode(credential)
     if (username) {
-      localStorage?.setItem(CACHE_NAME, credential);
+      localStorage?.setItem(TOKEN_CACHE_NAME, credential);
       setUsername(username);
       setShowLoginPanel(false);
       setToken(credentialResponse);

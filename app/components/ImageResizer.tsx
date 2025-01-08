@@ -5,6 +5,7 @@ import Image from "next/image";
 import { TrashIcon } from "@heroicons/react/24/outline";
 import { resize, resizeFree } from "../api/resize";
 import { loginStore } from "@/store/LoginStore";
+import { save as saveCache, get as getCache } from "./SizeCache";
 
 interface Size {
   input: number;
@@ -55,7 +56,6 @@ const sizeTemplates = [24, 32, 48, 64, 96, 128, 256, 512].map((e) => ({
   scale: 0,
   width: 0,
   height: 0,
-  imgSrc: null,
   needAI: false,
   useAI: false,
   selected: false,
@@ -65,9 +65,6 @@ const ImageResizer = () => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [selectImageErrorShow, setSelectImageErrorShow] = useState(false);
   const [submitErrorShow, setSubmitErrorShow] = useState(false);
-  const [resizeMode, setResizeMode] = useState<"width" | "height">("width");
-  const [sizes, setSizes] = useState<DefaultSize[]>(sizeTemplates);
-  const [customSizes, setCustomSizes] = useState<Size[]>([]);
   const [imageInfo, setImageInfo] = useState<{
     blob: Blob;
     width: number;
@@ -76,8 +73,9 @@ const ImageResizer = () => {
     aspectRatioNumber: number;
     size: string;
   } | null>(null);
-
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [resizeMode, setResizeMode] = useState<"width" | "height">('width');
+  const [sizes, setSizes] = useState<DefaultSize[]>(sizeTemplates);
+  const [customSizes, setCustomSizes] = useState<Size[]>([]);
 
   const calcSize = (size: number) => {
     if (!imageInfo) {
@@ -91,6 +89,7 @@ const ImageResizer = () => {
       return { width: size * aps, height: size, scale: size / imageInfo.height };
     }
   };
+
   const initSize = (size: number) => {
     const { width, height, scale } = calcSize(size);
     const s = {
@@ -99,13 +98,66 @@ const ImageResizer = () => {
       width,
       height,
       needAI: Boolean(false),
-      useAI: false,
+      useAI: Boolean(false),
     } satisfies Size;
 
     s.needAI = needAI(s);
 
     return s;
   };
+  const needAI = (size: Size) => {
+    if (!imageInfo) {
+      return false;
+    }
+
+    return size.width > imageInfo?.width || size.height > imageInfo?.height;
+  };
+
+  const cache = getCache();
+
+  useEffect(() => {
+    let resizeModeStr = cache.resizeMode ? cache.resizeMode : "width";
+    setResizeMode(resizeModeStr);
+  }, [cache.resizeMode])
+
+  useEffect(() => {
+
+    if (cache.sizes) {
+      let sizeTs = [...sizeTemplates];
+      for (let c of cache.sizes) {
+        for (let s of sizeTs) {
+          if (c.input == s.input) {
+            s.selected = true;
+            s.useAI = c.useAI;
+            break;
+          }
+        }
+      }
+      setSizes(sizeTs);
+    }
+
+  }, [cache.resizeMode])
+
+  useEffect(() => {
+
+
+    if (cache.customSizes) {
+      const cs = [];
+
+      for (let c of cache.customSizes) {
+        let size = initSize(c.input);
+        size.useAI = c.useAI;
+        cs.push(size);
+      }
+
+      setCustomSizes(cs);
+
+    }
+  }, [cache.customSizes])
+
+
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const formatFileSize = (bytes: number): string => {
     if (bytes === 0) return "0 Bytes";
@@ -185,13 +237,7 @@ const ImageResizer = () => {
     }
   };
 
-  const needAI = (size: Size) => {
-    if (!imageInfo) {
-      return false;
-    }
 
-    return size.width > imageInfo?.width || size.height > imageInfo?.height;
-  };
   const freshSizesDisplay = () => {
     sizes.forEach((e) => {
       const { width, height, scale } = calcSize(e.input);
@@ -255,21 +301,27 @@ const ImageResizer = () => {
   };
 
   const setShowLoginPanel = loginStore((state) => state.setShowLoginPanel);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const submit = async () => {
 
+    if (isSubmitting) {
+      return;
+    }
+    setIsSubmitting(true);
     setSubmitErrorShow(false);
 
     if (!imageInfo) {
       setSelectImageErrorShow(true);
-
+      setIsSubmitting(false);
       return;
     }
-
-    // 将total中的imgSrc打包到zip中下载
 
     const b = imageInfo?.blob;
 
     const total = [...sizes.filter((e) => e.selected), ...customSizes].map(e => ({ "scale": e.scale, "use_ai": e.useAI }));
+
+    saveCache(resizeMode, sizes.filter((e) => e.selected), customSizes);
 
     let allfree = true;
     total.forEach(e => {
@@ -296,12 +348,13 @@ const ImageResizer = () => {
         setShowLoginPanel(true);
         return;
       }
-
       setSubmitErrorShow(true);
       res.text().then(r => {
         console.error(`Image Process Error, status = ${res.status}, message = ${r}`);
       })
     }
+    setIsSubmitting(false);
+
   };
 
   return (
@@ -461,11 +514,20 @@ const ImageResizer = () => {
           {/* Execute Button */}
           <button
             onClick={submit}
-            className="w-full sm:w-auto px-8 py-4 text-white bg-gradient-to-r from-blue-400 to-purple-500 hover:from-blue-500 hover:to-purple-600 rounded-full shadow-md hover:shadow-lg transition-all"
+            disabled={isSubmitting}
+            className="w-full sm:w-auto px-8 py-4 text-white bg-gradient-to-r from-blue-400 to-purple-500 hover:from-blue-500 hover:to-purple-600 rounded-full shadow-md hover:shadow-lg transition-all disabled:opacity-75 disabled:cursor-not-allowed"
           >
-            Start Process
+            {isSubmitting ? (
+              <div className="flex items-center justify-center">
+                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
+              </div>
+            ) : (
+              "Start Process"
+            )}
           </button>
-          <div className="w-full sm:w-auto text-center text-stone-400">* AI Need Login</div>
+
+
+          {/* <div className="w-full sm:w-auto text-center text-stone-400">* AI Need Login</div> */}
           {selectImageErrorShow && (
             <div className="text-red-500 text-xl text-center">
               please upload an image first
