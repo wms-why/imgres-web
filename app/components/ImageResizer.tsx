@@ -91,6 +91,7 @@ const ImageResizer = () => {
   };
 
   const initSize = (size: number) => {
+
     const { width, height, scale } = calcSize(size);
     const s = {
       input: size,
@@ -479,9 +480,12 @@ const ImageResizer = () => {
               <div key={index} className="flex justify-around py-2">
                 <input
                   type="number"
-                  value={size.input}
+                  value={size.input ? size.input : ""}
                   onInput={(e) => {
-                    const value = parseInt(e.currentTarget.value);
+
+                    const inputValue = e.currentTarget.value;
+
+                    const value = inputValue ? parseInt(e.currentTarget.value) : 0;
                     if (value > 2048) {
                       e.currentTarget.setCustomValidity(
                         "Maximum size is 2048px"
@@ -492,6 +496,7 @@ const ImageResizer = () => {
                     e.currentTarget.setCustomValidity("");
                     customSizes[index] = initSize(value);
                     setCustomSizes([...customSizes]);
+
                   }}
                   min="1"
                   max="2048"

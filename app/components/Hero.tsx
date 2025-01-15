@@ -2,7 +2,7 @@ import React from 'react';
 
 const Hero = () => {
   return (
-    <section className="w-full pt-24 pb-16">
+    <section className="w-full pb-16">
       <div className="max-w-[1024px] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center space-y-8">
           <h1 className="text-5xl md:text-6xl font-semibold tracking-tight bg-gradient-to-r from-blue-400 to-purple-500 text-transparent bg-clip-text">

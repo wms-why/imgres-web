@@ -1,36 +1,38 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# [Imgres 在线地址](https://imgres.online)
 
-## Getting Started
+这是项目的前端部分，[后端部分地址](https://github.com/wms-why/imgres-api)
 
-First, run the development server:
+## 启动步骤
+
+### 首先，clone 项目的前端和后台。
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/wms-why/imgres-web.git
+git clone https://github.com/wms-why/imgres-api.git
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 其次，分别启动项目
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+# 前端
+yarn install
+yarn dev
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+#后台
+cargo run
+```
 
-## Learn More
+### 然后，使用 caddy 或者 nginx 做反向代理，推荐使用[caddy](https://github.com/caddyserver/caddy/releases)
 
-To learn more about Next.js, take a look at the following resources:
+Caddyfile 配置如下
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```Caddyfile
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+:54321
 
-## Deploy on Vercel
+reverse_proxy /api/* localhost:3001
+reverse_proxy * localhost:3000
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### 最后，浏览器访问 地址： http://localhost:54321

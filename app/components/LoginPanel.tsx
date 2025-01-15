@@ -1,61 +1,28 @@
 import { GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
-import jwt from "jsonwebtoken";
 import { useState } from "react";
 import { loginStore } from "@/store/LoginStore";
+import { login } from "../api/login";
 
-function decode(credential: string) {
-  const decoded = jwt.decode(credential);
-
-  if (decoded && typeof decoded !== "string") {
-    return (decoded as jwt.JwtPayload).name as string;
-  }
-  return null;
-}
-
-export const TOKEN_CACHE_NAME = "token";
-export function loadFromCache() {
-
-  const token = localStorage?.getItem(TOKEN_CACHE_NAME);
-  if (token) {
-    const decoded = jwt.decode(token) as { exp: number };
-    // 检查decoded是否过期
-    const currentTime = Math.floor(Date.now() / 1000);
-
-    if (decoded.exp < currentTime) {
-      localStorage?.removeItem(TOKEN_CACHE_NAME);
-    } else {
-      let username = (decoded as jwt.JwtPayload).name as string;
-      if (username) {
-        return { username, token };
-      }
-    }
-  }
-
-  return null;
-}
 
 export default function LoginPanel() {
 
   const [loginError, setLoginError] = useState(false);
   const setShowLoginPanel = loginStore((state) => state.setShowLoginPanel);
-  const setUsername = loginStore((state) => state.setUsername);
-  const setToken = loginStore((state) => state.setToken);
-
 
   const googleClientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!;
 
   const handleGoogleLogin = (credentialResponse: any) => {
     setLoginError(false);
     const { credential } = credentialResponse;
-    let username = decode(credential)
-    if (username) {
-      localStorage?.setItem(TOKEN_CACHE_NAME, credential);
-      setUsername(username);
-      setShowLoginPanel(false);
-      setToken(credentialResponse);
-    } else {
-      setLoginError(true);
-    }
+
+    login(credential).then(success => {
+      if (success) {
+        setShowLoginPanel(false);
+      } else {
+        setLoginError(true);
+      }
+    });
+
   };
 
   const handleGoogleLoginError = () => {
@@ -68,6 +35,8 @@ export default function LoginPanel() {
         <GoogleLogin
           onSuccess={handleGoogleLogin}
           onError={handleGoogleLoginError}
+          size="medium"
+
         />
       </GoogleOAuthProvider>
 

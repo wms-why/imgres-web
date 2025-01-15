@@ -3,6 +3,8 @@ import LoginPanel from "./components/LoginPanel";
 import Footer from "./components/Footer";
 import Header from "./components/Header";
 import { loginStore } from "@/store/LoginStore";
+import { loadFromCache } from "./api/login";
+import { useEffect } from "react";
 
 
 
@@ -12,8 +14,11 @@ export default function Context({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const { showLoginPanel } = loginStore();
 
-  const showLoginPanel = loginStore((state) => state.showLoginPanel)
+  useEffect(() => {
+    loadFromCache();
+  }, [])
 
   return (
     <>
@@ -22,7 +27,11 @@ export default function Context({
       </div>}
 
       <Header />
-      {children}
+
+      <div>
+        {children}
+
+      </div>
       <Footer />
 
     </>

@@ -8,11 +8,18 @@ const Header = () => {
       <nav className="max-w-[1024px] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           <div className="flex items-center">
-            <h1 className="text-white text-xl font-medium">ImageResize</h1>
+            <h1 onClick={() => {
+              window.scrollTo({ top: 0, behavior: 'smooth' })
+            }
+            }>
+              <a className="text-white text-2xl font-medium" href="/">Imgres</a>
+            </h1>
           </div>
           <div className="hidden md:flex items-center space-x-8">
-            <a href="#features" className="text-gray-300 hover:text-white transition-colors">Features</a>
-            <a href="#faq" className="text-gray-300 hover:text-white transition-colors">FAQ</a>
+            <a href="/#EffectComparison" className="text-gray-300 hover:text-white transition-colors">EffectComparison</a>
+            <a href="/#faq" className="text-gray-300 hover:text-white transition-colors">FAQ</a>
+          </div>
+          <div className="hidden md:flex items-center space-x-8">
             {/* <LoginButton /> */}
           </div>
         </div>

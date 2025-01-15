@@ -6,8 +6,6 @@ export interface Store {
   setShowLoginPanel: (b: boolean) => void;
   username: string;
   setUsername: (s: string) => void;
-  token: string;
-  setToken: (s: string) => void;
 }
 
 export const loginStore = create<Store>((set) => ({
@@ -22,6 +20,4 @@ export const loginStore = create<Store>((set) => ({
       set({ username: "", isLogin: false });
     }
   },
-  token: "",
-  setToken: (s: string) => set({ token: s }),
 }));

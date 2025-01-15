@@ -1,5 +1,6 @@
-import { TOKEN_CACHE_NAME } from "../components/LoginPanel";
+'use client'
 import { base_url } from "./base";
+import { getToken } from "./login";
 
 export async function resize(
   blob: Blob,
@@ -13,7 +14,7 @@ export async function resize(
   body.append("height", height.toString());
   body.append("sizes", JSON.stringify(sizes));
 
-  const token = localStorage.getItem(TOKEN_CACHE_NAME);
+  const token = getToken();
   return fetch(`${base_url}/resize`, {
     method: "POST",
     headers: {

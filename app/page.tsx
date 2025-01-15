@@ -1,8 +1,7 @@
 import Hero from './components/Hero';
 import FAQ from './components/FAQ';
 import ImageResizer from './components/ImageResizer';
-import { UseBoundStore } from 'zustand/react';
-import { StoreApi } from 'zustand';
+import EffectComparison from './components/EffectComparison';
 
 export default function Home() {
   return (
@@ -10,6 +9,8 @@ export default function Home() {
       <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start w-full">
         <Hero />
         <ImageResizer />
+
+        <EffectComparison />
         <FAQ />
       </main>
     </div>

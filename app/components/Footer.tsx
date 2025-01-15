@@ -10,15 +10,17 @@ const Footer = () => {
             <p className="text-sm">
               Professional image resizing tool for all your needs.
             </p>
+            {/* 添加github链接 */}
+            <a href="https://github.com/wms-why/imgres-web" target="_blank" rel="noopener noreferrer" className="text-sm hover:text-white transition-colors">GitHub</a>
           </div>
           <div>
             <h4 className="text-white text-sm font-medium mb-4">Quick Links</h4>
             <ul className="space-y-3 text-sm">
               <li>
-                <a href="#features" className="hover:text-white transition-colors">Features</a>
+                <a href="/#EffectComparison" className="hover:text-white transition-colors">EffectComparison</a>
               </li>
               <li>
-                <a href="#faq" className="hover:text-white transition-colors">FAQ</a>
+                <a href="/#faq" className="hover:text-white transition-colors">FAQ</a>
               </li>
             </ul>
           </div>
@@ -26,10 +28,10 @@ const Footer = () => {
             <h4 className="text-white text-sm font-medium mb-4">Legal</h4>
             <ul className="space-y-3 text-sm">
               <li>
-                <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
+                <a href="/privacy-policy" className="hover:text-white transition-colors">Privacy Policy</a>
               </li>
               <li>
-                <a href="#" className="hover:text-white transition-colors">Terms of Service</a>
+                <a href="/terms-of-service" className="hover:text-white transition-colors">Terms of Service</a>
               </li>
             </ul>
           </div>
