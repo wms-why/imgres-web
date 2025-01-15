@@ -16,7 +16,7 @@ const Header = () => {
             </h1>
           </div>
           <div className="hidden md:flex items-center space-x-8">
-            <a href="/#EffectComparison" className="text-gray-300 hover:text-white transition-colors">EffectComparison</a>
+            <a href="/#EffectComparison" className="text-gray-300 hover:text-white transition-colors">Effect Comparison</a>
             <a href="/#faq" className="text-gray-300 hover:text-white transition-colors">FAQ</a>
           </div>
           <div className="hidden md:flex items-center space-x-8">
