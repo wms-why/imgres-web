@@ -41,8 +41,8 @@ const Footer = () => {
 
         </div>
         <div className="mt-12 pt-8 border-t border-gray-800 text-sm text-center">
-          <p>&copy; {new Date().getFullYear()} ImageResize. All rights reserved.</p>
-          <p className="mt-2">Contact: <a href="mailto:author@example.com" className="hover:text-white transition-colors">mkyao1992@gmail.com</a></p>
+          <p>&copy; {new Date().getFullYear()} Imgres. All rights reserved.</p>
+          <p className="mt-2">Contact: <a href="mailto:support@imgres.online" className="hover:text-white transition-colors">support@imgres.online</a></p>
         </div>
       </div>
     </footer>

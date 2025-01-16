@@ -541,7 +541,7 @@ const ImageResizer = () => {
 
           {submitErrorShow && (
             <div className="text-red-500 text-xl text-center">
-              Image Process Error, Please Contact the Author
+              Image Process Error, Please Contact Our Team
             </div>
           )}
         </div>
