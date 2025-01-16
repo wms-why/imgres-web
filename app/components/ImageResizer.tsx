@@ -196,7 +196,7 @@ const ImageResizer = () => {
       return (
         <span
           className="text-green-500"
-          title="your chooesed pixes is lower then your upload image's pixes"
+          title="lower resolution process always free"
         >
           free
         </span>
@@ -205,10 +205,10 @@ const ImageResizer = () => {
       if (size.useAI) {
         return (
           <>
-            <span className="text-green-500 text-xl font-bold">AI</span> |{" "}
+            <span className="text-green-500 text-xl font-bold" title="cost one credit">AI</span> |{" "}
             <span
               className="text-gray-500 cursor-pointer text-xl font-bold"
-              title="you can click to toogle AI to resize it to your choosed size"
+              title="toogle AI to process this Size"
               onClick={() => {
                 size.useAI = false;
                 freshSizesDisplay();
@@ -223,7 +223,7 @@ const ImageResizer = () => {
           <>
             <span
               className="text-gray-500 cursor-pointer text-xl font-bold"
-              title="need login, you can click to toogle free to resize it to your choosed size"
+              title="toogle free to process this Size, cost one credit"
               onClick={() => {
                 size.useAI = true;
                 freshSizesDisplay();
@@ -359,7 +359,7 @@ const ImageResizer = () => {
   };
 
   return (
-    <section className="w-full py-16 bg-gray-100">
+    <section id="tool" className="w-full py-16 bg-gray-100">
       <div className="max-w-[1024px] mx-auto ">
         <h2 className="text-4xl font-semibold text-center mb-12">
           Image Resize Tool
@@ -527,12 +527,12 @@ const ImageResizer = () => {
                 <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
               </div>
             ) : (
-              "Start Process"
+              "Start Process ( AI Temporarily Free )"
             )}
           </button>
 
 
-          {/* <div className="w-full sm:w-auto text-center text-stone-400">* AI Need Login</div> */}
+          <div className="w-full sm:w-auto text-center text-stone-400">* AI need login, and cost your credit. One Credit for Once AI Process</div>
           {selectImageErrorShow && (
             <div className="text-red-500 text-xl text-center">
               please upload an image first

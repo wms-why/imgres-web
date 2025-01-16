@@ -30,7 +30,6 @@ export default function Context({
 
       <div>
         {children}
-
       </div>
       <Footer />
 

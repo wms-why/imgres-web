@@ -2,6 +2,7 @@ import Hero from './components/Hero';
 import FAQ from './components/FAQ';
 import ImageResizer from './components/ImageResizer';
 import EffectComparison from './components/EffectComparison';
+import PricingPage from './components/Price';
 
 export default function Home() {
   return (
@@ -10,6 +11,7 @@ export default function Home() {
         <Hero />
         <ImageResizer />
 
+        <PricingPage />
         <EffectComparison />
         <FAQ />
       </main>
