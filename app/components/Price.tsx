@@ -138,6 +138,9 @@ export default function PricingPage() {
           </button>
         </div>
       </div>
+      <div className="text-md text-center mb-12">
+        <a href="/refund-policy" className='text-gray-500'>* Check Refund Policy</a>
+      </div>
     </section>
   )
 }
