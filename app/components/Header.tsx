@@ -1,8 +1,12 @@
 import React from 'react';
 import LoginButton from './LoginButton';
+import Image from 'next/image';
 
 const Header = () => {
 
+  const width = 417;
+  const height = 130;
+  const factor = 0.4;
   return (
     <header className="fixed top-0 w-full bg-black/80 backdrop-blur-md z-50">
       <nav className="max-w-[1024px] mx-auto px-4 sm:px-6 lg:px-8">
@@ -12,7 +16,9 @@ const Header = () => {
               window.scrollTo({ top: 0, behavior: 'smooth' })
             }
             }>
-              <a className="text-white text-2xl font-medium" href="/">Imgres</a>
+              <a href="/">
+                <Image src="/logo.png" width={width * factor} height={height * factor} alt='logo picture' />
+              </a>
             </h1>
           </div>
           <div className="hidden md:flex items-center space-x-8">
