@@ -18,7 +18,12 @@ const FAQ = () => {
     {
       question: 'How is the image quality preserved?',
       answer: 'We use advanced algorithms to maintain image quality while optimizing file size. And if you choose AI, you can get higher quality improvements.'
-    }
+    },
+    {
+      question: 'If I have some questions, where can I ask them?',
+      answer: 'We have telegram group for support.',
+      link: 'https://t.me/+W1kcVrb-cQU5NWFh'
+    },
   ];
 
   return (
@@ -35,6 +40,11 @@ const FAQ = () => {
                 <ChevronDownIcon className="h-5 w-5 text-gray-500" />
               </div>
               <p className="mt-2 text-gray-600">{faq.answer}</p>
+              {faq.link && (
+                <a href={faq.link} target='_blank' rel="noreferrer" className="text-blue-500 hover:underline mt-2 block" >
+                  {faq.link}
+                </a>
+              )}
             </div>
           ))}
         </div>
