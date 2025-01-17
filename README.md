@@ -2,6 +2,8 @@
 
 这是项目的前端部分，[后端部分地址](https://github.com/wms-why/imgres-api)
 
+[English](https://github.com/wms-why/imgres-web/blob/main/README_en.md)
+
 ## 启动步骤
 
 ### 首先，clone 项目的前端和后台。
