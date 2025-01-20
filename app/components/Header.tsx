@@ -10,7 +10,7 @@ const Header = () => {
   return (
     <header className="fixed top-0 w-full bg-black/80 backdrop-blur-md z-50">
       <nav className="max-w-[1024px] mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex h-16 items-center justify-between">
+        <div className="flex h-14 items-center justify-between">
           <div className="flex items-center">
             <h1 onClick={() => {
               window.scrollTo({ top: 0, behavior: 'smooth' })
