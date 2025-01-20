@@ -4,9 +4,9 @@ import Image from 'next/image';
 
 const Header = () => {
 
-  const width = 417;
-  const height = 130;
-  const factor = 0.4;
+  const width = 512;
+  const height = 512;
+  const factor = 0.08;
   return (
     <header className="fixed top-0 w-full bg-black/80 backdrop-blur-md z-50">
       <nav className="max-w-[1024px] mx-auto px-4 sm:px-6 lg:px-8">
@@ -15,10 +15,13 @@ const Header = () => {
             <h1 onClick={() => {
               window.scrollTo({ top: 0, behavior: 'smooth' })
             }
-            }>
+            }
+              className="flex items-center font-bold text-2xl text-white cursor-pointer gap-2"
+            >
               <a href="/">
-                <Image src="/logo.png" width={width * factor} height={height * factor} alt='logo picture' />
+                <Image src="/logo@512_512.png" width={width * factor} height={height * factor} alt='logo picture' />
               </a>
+              Imgres
             </h1>
           </div>
           <div className="hidden md:flex items-center space-x-8">
