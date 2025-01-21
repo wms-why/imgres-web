@@ -6,7 +6,7 @@ const Footer = () => {
       <div className="w-full mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="flex ">
           <div className='w-1/2'>
-            <h3 className="text-white text-lg font-medium mb-4">Imgres</h3>
+            <h2 className="text-white text-lg font-medium mb-4">Imgres</h2>
             <p className="text-sm mb-4">
               Professional image resizing tool for all your needs.
             </p>
@@ -24,10 +24,13 @@ const Footer = () => {
           </div>
           <div className='flex justify-center gap-24 '>
             <div>
-              <h4 className="text-white text-sm font-medium mb-4">Quick Links</h4>
+              <h2 className="text-white text-sm font-medium mb-4">Quick Links</h2>
               <ul className="space-y-3 text-sm">
                 <li>
-                  <a href="/#EffectComparison" className="hover:text-white transition-colors">Effect Comparison</a>
+                  <a href="/price" className="hover:text-white transition-colors">Price</a>
+                </li>
+                <li>
+                  <a href="/#effect-comparison" className="hover:text-white transition-colors">Effect Comparison</a>
                 </li>
                 <li>
                   <a href="/#faq" className="hover:text-white transition-colors">FAQ</a>
@@ -35,13 +38,16 @@ const Footer = () => {
               </ul>
             </div>
             <div>
-              <h4 className="text-white text-sm font-medium mb-4">Legal</h4>
+              <h2 className="text-white text-sm font-medium mb-4">Legal</h2>
               <ul className="space-y-3 text-sm">
                 <li>
                   <a href="/privacy-policy" className="hover:text-white transition-colors">Privacy Policy</a>
                 </li>
                 <li>
                   <a href="/terms-of-service" className="hover:text-white transition-colors">Terms of Service</a>
+                </li>
+                <li>
+                  <a href="/refund-policy" className="hover:text-white transition-colors">Refund Policy</a>
                 </li>
               </ul>
             </div>

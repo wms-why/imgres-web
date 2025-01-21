@@ -14,10 +14,10 @@ export default function Context({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const { showLoginPanel } = loginStore();
+  const { showLoginPanel, setUserInfo } = loginStore();
 
   useEffect(() => {
-    loadFromCache();
+    loadFromCache(setUserInfo);
   }, [])
 
   return (
@@ -28,7 +28,7 @@ export default function Context({
 
       <Header />
 
-      <div>
+      <div className="py-24">
         {children}
       </div>
       <Footer />

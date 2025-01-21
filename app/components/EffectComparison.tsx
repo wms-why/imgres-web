@@ -6,7 +6,7 @@ export default function EffectComparison() {
 
   return (
 
-    <section id="EffectComparison" className="py-24 space-y-8 w-full">
+    <section id="effect-comparison" className="py-24 space-y-8 w-full">
       <h2 className="text-3xl font-bold text-center mb-8">Image Quality Comparison</h2>
       <div className="flex justify-around gap-8">
         <div className="flex flex-col items-center p-6 bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300">
@@ -18,7 +18,7 @@ export default function EffectComparison() {
             className="rounded-lg mb-4"
           />
           <div className="text-lg font-medium text-gray-700">Original Picture</div>
-          <div className="text-sm text-gray-500">200x200 resolution</div>
+          <div className="text-sm text-gray-500">200 * 200 resolution</div>
         </div>
         <div className="flex flex-col items-center p-6 bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300">
           <Image
@@ -29,7 +29,7 @@ export default function EffectComparison() {
             className="rounded-lg mb-4"
           />
           <div className="text-lg font-medium text-gray-700">Algorithm Upscaled</div>
-          <div className="text-sm text-gray-500">800x800 resolution (Free)</div>
+          <div className="text-sm text-gray-500">800 * 800 resolution (Free)</div>
         </div>
         <div className="flex flex-col items-center p-6 bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300">
           <Image
@@ -40,7 +40,7 @@ export default function EffectComparison() {
             className="rounded-lg mb-4"
           />
           <div className="text-lg font-medium text-gray-700">AI Upscaled</div>
-          <div className="text-sm text-gray-500">800x800 resolution</div>
+          <div className="text-sm text-gray-500">800 * 800 resolution</div>
         </div>
       </div>
     </section>

@@ -1,7 +1,7 @@
 
 export default function RefundPolicy() {
   return (
-    <section className="container mx-auto px-4 py-24 max-w-4xl">
+    <section className="container mx-auto px-4 max-w-4xl">
       <h2 className="text-4xl font-semibold text-center mb-12">Refund Policy</h2>
 
       <div className="space-y-8">

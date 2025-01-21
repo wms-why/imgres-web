@@ -196,7 +196,7 @@ const ImageResizer = () => {
       return (
         <span
           className="text-green-500"
-          title="lower resolution process always free"
+          title="image resize with lower resolution is always free"
         >
           free
         </span>
@@ -205,10 +205,10 @@ const ImageResizer = () => {
       if (size.useAI) {
         return (
           <>
-            <span className="text-green-500 text-xl font-bold" title="cost one credit">AI</span> |{" "}
+            <span className="text-green-500 text-xl font-bold" title="use AI to resize image with this size">AI</span>
             <span
               className="text-gray-500 cursor-pointer text-xl font-bold"
-              title="toogle AI to process this Size"
+              title="use Algorithm to resize image with this size (free)"
               onClick={() => {
                 size.useAI = false;
                 freshSizesDisplay();
@@ -223,7 +223,7 @@ const ImageResizer = () => {
           <>
             <span
               className="text-gray-500 cursor-pointer text-xl font-bold"
-              title="toogle free to process this Size, cost one credit"
+              title="use AI to resize image with this size"
               onClick={() => {
                 size.useAI = true;
                 freshSizesDisplay();
@@ -231,7 +231,9 @@ const ImageResizer = () => {
             >
               AI
             </span>{" "}
-            | <span className="text-green-500 text-xl font-bold">free</span>
+            | <span className="text-green-500 text-xl font-bold"
+              title="use Algorithm to resize image with this size (free)"
+            >free</span>
           </>
         );
       }
@@ -386,9 +388,9 @@ const ImageResizer = () => {
                 <Image
                   src={selectedImage}
                   alt="Selected"
-                  className="w-full h-auto rounded-lg shadow-lg"
-                  width={imageInfo?.width}
-                  height={imageInfo?.height}
+                  className=" h-auto rounded-lg shadow-lg"
+                  width={400}
+                  height={400 * imageInfo?.aspectRatioNumber}
                 />
                 <div className="mt-4 text-sm text-gray-600 space-y-1">
                   <p className="flex justify-between border-b pb-1">
@@ -527,7 +529,7 @@ const ImageResizer = () => {
                 <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
               </div>
             ) : (
-              "Start Process ( AI Temporarily Free )"
+              "Start Image Resize ( AI Temporarily Free )"
             )}
           </button>
 
@@ -541,7 +543,7 @@ const ImageResizer = () => {
 
           {submitErrorShow && (
             <div className="text-red-500 text-xl text-center">
-              Image Process Error, Please Contact Our Team
+              Image Resize Error, Please Contact Our Team
             </div>
           )}
         </div>

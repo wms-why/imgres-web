@@ -1,23 +1,22 @@
 import { create } from "zustand";
 
-export interface Store {
+export interface LoginStore {
   isLogin: boolean;
   showLoginPanel: boolean;
   setShowLoginPanel: (b: boolean) => void;
-  username: string;
-  setUsername: (s: string) => void;
+  userInfo: UserInfo | null;
+  setUserInfo: (info: UserInfo | null) => void;
 }
 
-export const loginStore = create<Store>((set) => ({
+export interface UserInfo {
+  username: string;
+  email: string;
+}
+
+export const loginStore = create<LoginStore>((set) => ({
   isLogin: false,
   showLoginPanel: false,
   setShowLoginPanel: (b: boolean) => set({ showLoginPanel: b }),
-  username: "",
-  setUsername: (s: string) => {
-    if (s) {
-      set({ username: s, isLogin: true });
-    } else {
-      set({ username: "", isLogin: false });
-    }
-  },
+  userInfo: null,
+  setUserInfo: (info: UserInfo | null) => set({ userInfo: info }),
 }));

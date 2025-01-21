@@ -1,59 +1,46 @@
 'use client'
 
 import { useState } from 'react'
-
+import { prices } from '@/lib/price'
+import Link from 'next/link'
 export default function PricingPage() {
-  const [selectedOneTime, setSelectedOneTime] = useState("100")
-  const [selectedSubscription, setSelectedSubscription] = useState("200")
-  const [billingCycle, setBillingCycle] = useState("yearly")
+  const oneTimeCredits = prices.filter(p => p.type === "one-time")
+  const subscriptionCredits = prices.filter(p => p.type === "subscription")
 
-  const oneTimeCredits = [
-    { credits: "100", price: 11.99, pricePerCredit: 0.12 },
-    { credits: "200", price: 19.99, pricePerCredit: 0.10 },
-    { credits: "500", price: 39.99, pricePerCredit: 0.08 },
-    { credits: "1000", price: 59.99, pricePerCredit: 0.06 },
-    { credits: "2000", price: 79.99, pricePerCredit: 0.04 },
-    { credits: "10000", price: 280, pricePerCredit: 0.028 }
-  ]
-
-  const subscriptionCredits = [
-    { credits: "200", price: 35.99, pricePerCredit: 0.015 },
-    { credits: "500", price: 71.99, pricePerCredit: 0.012 },
-    { credits: "1000", price: 129.99, pricePerCredit: 0.011 },
-    { credits: "2000", price: 215.99, pricePerCredit: 0.009 }
-  ]
+  const [selectedOneTimeId, setSelectedOneTimeId] = useState(oneTimeCredits[0].id)
+  const [selectedSubscriptionId, setSelectedSubscriptionId] = useState(subscriptionCredits[0].id)
 
   return (
-    <section id="price" className="container mx-auto px-4 py-24 ">
+    <section id="price" className="container mx-auto px-4 ">
       <h2 className="text-4xl font-semibold text-center mb-12">Price</h2>
       <div className="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
         {/* One-time Payment Section */}
         <div className="bg-white rounded-lg shadow-sm p-6">
           <h3 className="text-2xl font-semibold mb-2">One-time Payment</h3>
           <div className="text-3xl font-bold mb-6">
-            US$ {selectedOneTime === "100" ? "0.12" : oneTimeCredits.find(c => c.credits === selectedOneTime)?.pricePerCredit.toFixed(3)}
-            <span className="text-sm font-normal text-gray-500">/Credit</span>
+            US$ {oneTimeCredits.find(c => c.id === selectedOneTimeId)?.pricePerCredit.toFixed(3)}
+            <span className="text-sm font-normal text-gray-500"> / Credit</span>
           </div>
 
           <div className="space-y-4">
             {oneTimeCredits.map((plan) => (
               <label
-                key={plan.credits}
-                className={`flex items-center justify-between p-4 border rounded-lg cursor-pointer hover:bg-gray-50 ${selectedOneTime === plan.credits ? 'border-primary' : 'border-gray-200'
+                key={plan.id}
+                className={`flex items-center justify-between p-4 border rounded-lg cursor-pointer hover:bg-gray-50 ${selectedOneTimeId === plan.id ? 'border-primary' : 'border-gray-200'
                   }`}
               >
                 <div className="flex items-center space-x-2">
                   <input
                     type="radio"
                     name="one-time"
-                    value={plan.credits}
-                    checked={selectedOneTime === plan.credits}
-                    onChange={(e) => setSelectedOneTime(e.target.value)}
+                    value={plan.id}
+                    checked={selectedOneTimeId === plan.id}
+                    onChange={(e) => setSelectedOneTimeId(e.target.value)}
                     className="w-4 h-4 text-primary focus:ring-primary"
                   />
                   <div>
                     <div className="font-medium">{plan.credits} Credits</div>
-                    <div className="text-sm text-gray-500">US${plan.pricePerCredit.toFixed(3)}/Credit</div>
+                    <div className="text-sm text-gray-500">US${plan.pricePerCredit.toFixed(3)} / Credit</div>
                   </div>
                 </div>
                 <div className="font-semibold">US${plan.price}</div>
@@ -65,9 +52,12 @@ export default function PricingPage() {
             Credits available for use anytime within 2 years of purchase
           </p>
 
-          <button className="w-full font-medium rounded-lg py-3 px-6 bg-gray-200 hover:bg-gray-300">
+          {/* <Link href={"/checkout/" + selectedOneTimeId}> */}
+          <button className="w-full font-medium rounded-lg py-3 px-6 bg-gray-200 hover:bg-gray-300" >
             Buy Now
           </button>
+          {/* </Link> */}
+
         </div>
 
         {/* Subscription Plan Section */}
@@ -81,28 +71,28 @@ export default function PricingPage() {
           <h3 className="text-2xl font-semibold mb-2">Subscription Plan for Year</h3>
           <div className="text-3xl font-bold mb-6">
             US$ 0.015
-            <span className="text-sm font-normal text-gray-500">/Credit</span>
+            <span className="text-sm font-normal text-gray-500"> / Credit</span>
           </div>
 
           <div className="space-y-4">
             {subscriptionCredits.map((plan) => (
               <label
-                key={plan.credits}
-                className={`flex items-center justify-between p-4 border rounded-lg cursor-pointer hover:bg-gray-50 ${selectedSubscription === plan.credits ? 'border-primary' : 'border-gray-200'
+                key={plan.id}
+                className={`flex items-center justify-between p-4 border rounded-lg cursor-pointer hover:bg-gray-50 ${selectedSubscriptionId === plan.id ? 'border-primary' : 'border-gray-200'
                   }`}
               >
                 <div className="flex items-center space-x-2">
                   <input
                     type="radio"
                     name="subscription"
-                    value={plan.credits}
-                    checked={selectedSubscription === plan.credits}
-                    onChange={(e) => setSelectedSubscription(e.target.value)}
+                    value={plan.id}
+                    checked={selectedSubscriptionId === plan.id}
+                    onChange={(e) => setSelectedSubscriptionId(e.target.value)}
                     className="w-4 h-4 text-primary focus:ring-primary"
                   />
                   <div>
                     <div className="font-medium">{plan.credits} Credits/Month x 12</div>
-                    <div className="text-sm text-gray-500">US${plan.pricePerCredit.toFixed(3)}/Credit</div>
+                    <div className="text-sm text-gray-500">US${plan.pricePerCredit.toFixed(3)} / Credit</div>
                   </div>
                 </div>
                 <div className="font-semibold">US${plan.price}</div>
@@ -133,9 +123,12 @@ export default function PricingPage() {
             </ul>
           </div>
 
+          {/* <Link href={"/checkout/" + selectedSubscriptionId}> */}
           <button className="w-full bg-gradient-to-r from-[#C1F05A] to-[#62E9E4] text-black font-medium rounded-lg py-3 px-6 hover:opacity-90">
             Subscribe Now
           </button>
+          {/* </Link> */}
+
         </div>
       </div>
       <div className="text-md text-center mb-12">

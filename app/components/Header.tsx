@@ -1,6 +1,7 @@
 import React from 'react';
 import LoginButton from './LoginButton';
 import Image from 'next/image';
+import Link from 'next/link';
 
 const Header = () => {
 
@@ -12,23 +13,20 @@ const Header = () => {
       <nav className="max-w-[1024px] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-14 items-center justify-between">
           <div className="flex items-center">
-            <h1 onClick={() => {
+            <div onClick={() => {
               window.scrollTo({ top: 0, behavior: 'smooth' })
             }
             }
-              className="flex items-center font-bold text-2xl text-white cursor-pointer gap-2"
             >
-              <a href="/">
+              <Link href="/" className="flex items-center font-bold text-2xl text-white cursor-pointer gap-2">
                 <Image src="/logo@512_512.png" width={width * factor} height={height * factor} alt='logo picture' />
-              </a>
-              Imgres
-            </h1>
+                Imgres
+              </Link>
+            </div>
           </div>
           <div className="hidden md:flex items-center space-x-8">
             <a href="/#tool" className="text-gray-300 hover:text-white transition-colors">Tool</a>
-            <a href="/#price" className="text-gray-300 hover:text-white transition-colors">Price</a>
-            <a href="/#EffectComparison" className="text-gray-300 hover:text-white transition-colors">Effect Comparison</a>
-            <a href="/#faq" className="text-gray-300 hover:text-white transition-colors">FAQ</a>
+            <a href="/price" className="text-gray-300 hover:text-white transition-colors">Price</a>
           </div>
           <div className="hidden md:flex items-center space-x-8">
             {/* <LoginButton /> */}

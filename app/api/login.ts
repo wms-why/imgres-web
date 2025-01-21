@@ -1,8 +1,10 @@
+import { useEffect } from "react";
 import { base_url } from "./base";
-import { loginStore } from "@/store/LoginStore";
+import { loginStore, UserInfo } from "@/store/LoginStore";
 
 interface LoginResponse {
   username: string;
+  email: string;
   token: string;
   exp: number;
 }
@@ -25,9 +27,9 @@ export async function login(token: string): Promise<boolean> {
   if (resp.status === 200) {
     const data = (await resp.json()) as LoginResponse;
 
-    const { setUsername } = loginStore();
+    const { setUserInfo } = loginStore();
 
-    setUsername(data.username);
+    setUserInfo(data);
     localStorage?.setItem(USER_INFO_CACHE_KEY, JSON.stringify(data));
 
     return true;
@@ -36,7 +38,7 @@ export async function login(token: string): Promise<boolean> {
   return false;
 }
 
-export function loadFromCache() {
+export function loadFromCache(setUserInfo: (info: UserInfo) => void) {
   const info = localStorage?.getItem(USER_INFO_CACHE_KEY);
   if (info) {
     const userInfo = JSON.parse(info) as LoginResponse;
@@ -44,7 +46,7 @@ export function loadFromCache() {
     if (expValid(userInfo.exp)) {
       localStorage?.removeItem(USER_INFO_CACHE_KEY);
     } else {
-      loginStore().setUsername(userInfo.username);
+      setUserInfo(userInfo);
     }
   }
 }
