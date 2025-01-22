@@ -205,9 +205,9 @@ const ImageResizer = () => {
       if (size.useAI) {
         return (
           <>
-            <span className="text-green-500 text-xl font-bold" title="use AI to resize image with this size">AI</span>
+            <span className="text-green-500  font-bold" title="use AI to resize image with this size">AI</span>{" | "}
             <span
-              className="text-gray-500 cursor-pointer text-xl font-bold"
+              className="text-gray-500 cursor-pointer  font-bold"
               title="use Algorithm to resize image with this size (free)"
               onClick={() => {
                 size.useAI = false;
@@ -222,7 +222,7 @@ const ImageResizer = () => {
         return (
           <>
             <span
-              className="text-gray-500 cursor-pointer text-xl font-bold"
+              className="text-gray-500 cursor-pointer font-bold"
               title="use AI to resize image with this size"
               onClick={() => {
                 size.useAI = true;
@@ -230,8 +230,9 @@ const ImageResizer = () => {
               }}
             >
               AI
-            </span>{" "}
-            | <span className="text-green-500 text-xl font-bold"
+            </span>
+            {" | "}
+            <span className="text-green-500  font-bold"
               title="use Algorithm to resize image with this size (free)"
             >free</span>
           </>

@@ -5,7 +5,7 @@ const Footer = () => {
     <footer className="w-full bg-black text-gray-400">
       <div className="w-full mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="flex ">
-          <div className='w-1/2'>
+          <div className='w-1/3'>
             <h2 className="text-white text-lg font-medium mb-4">Imgres</h2>
             <p className="text-sm mb-4">
               Professional image resizing tool for all your needs.
@@ -22,7 +22,16 @@ const Footer = () => {
             </div>
 
           </div>
-          <div className='flex justify-center gap-24 '>
+          <div className='w-2/3 flex justify-arround gap-24 '>
+            <div>
+              <h2 className="text-white text-sm font-medium mb-4">Tools</h2>
+              <ul className="space-y-3 text-sm">
+                <li>
+                  <a href="/" className="hover:text-white transition-colors">Image Resize</a>
+                </li>
+              </ul>
+            </div>
+
             <div>
               <h2 className="text-white text-sm font-medium mb-4">Quick Links</h2>
               <ul className="space-y-3 text-sm">
