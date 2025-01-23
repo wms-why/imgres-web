@@ -9,13 +9,15 @@ export default function LoginPanel() {
   const [loginError, setLoginError] = useState(false);
   const setShowLoginPanel = loginStore((state) => state.setShowLoginPanel);
 
+  const { setUserInfo } = loginStore();
+
   const googleClientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!;
 
   const handleGoogleLogin = (credentialResponse: any) => {
     setLoginError(false);
     const { credential } = credentialResponse;
 
-    login(credential).then(success => {
+    login(credential, setUserInfo).then(success => {
       if (success) {
         setShowLoginPanel(false);
       } else {

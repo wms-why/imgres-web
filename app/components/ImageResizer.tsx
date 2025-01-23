@@ -6,6 +6,7 @@ import { TrashIcon } from "@heroicons/react/24/outline";
 import { resize, resizeFree } from "../api/resize";
 import { loginStore } from "@/store/LoginStore";
 import { save as saveCache, get as getCache } from "./SizeCache";
+import { costCredits } from "../api/login";
 
 interface Size {
   input: number;
@@ -65,6 +66,7 @@ const ImageResizer = () => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [selectImageErrorShow, setSelectImageErrorShow] = useState(false);
   const [submitErrorShow, setSubmitErrorShow] = useState(false);
+  const [submitErrorMsg, setSubmitErrorMsg] = useState("");
   const [imageInfo, setImageInfo] = useState<{
     blob: Blob;
     width: number;
@@ -114,18 +116,18 @@ const ImageResizer = () => {
     return size.width > imageInfo?.width || size.height > imageInfo?.height;
   };
 
-  const cache = getCache();
+  const sizeCache = getCache();
 
   useEffect(() => {
-    let resizeModeStr = cache.resizeMode ? cache.resizeMode : "width";
+    let resizeModeStr = sizeCache.resizeMode ? sizeCache.resizeMode : "width";
     setResizeMode(resizeModeStr);
-  }, [cache.resizeMode])
+  }, [sizeCache.resizeMode])
 
   useEffect(() => {
 
-    if (cache.sizes) {
+    if (sizeCache.sizes) {
       let sizeTs = [...sizeTemplates];
-      for (let c of cache.sizes) {
+      for (let c of sizeCache.sizes) {
         for (let s of sizeTs) {
           if (c.input == s.input) {
             s.selected = true;
@@ -137,15 +139,15 @@ const ImageResizer = () => {
       setSizes(sizeTs);
     }
 
-  }, [cache.resizeMode])
+  }, [sizeCache.resizeMode])
 
   useEffect(() => {
 
 
-    if (cache.customSizes) {
+    if (sizeCache.customSizes) {
       const cs = [];
 
-      for (let c of cache.customSizes) {
+      for (let c of sizeCache.customSizes) {
         let size = initSize(c.input);
         size.useAI = c.useAI;
         cs.push(size);
@@ -154,7 +156,7 @@ const ImageResizer = () => {
       setCustomSizes(cs);
 
     }
-  }, [cache.customSizes])
+  }, [sizeCache.customSizes])
 
 
 
@@ -304,7 +306,7 @@ const ImageResizer = () => {
     }
   };
 
-  const setShowLoginPanel = loginStore((state) => state.setShowLoginPanel);
+  const { setShowLoginPanel, userInfo, setUserInfo } = loginStore();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const submit = async () => {
@@ -323,7 +325,7 @@ const ImageResizer = () => {
 
     const b = imageInfo?.blob;
 
-    const total = [...sizes.filter((e) => e.selected), ...customSizes].map(e => ({ "scale": e.scale, "use_ai": e.useAI }));
+    const total = [...sizes.filter((e) => e.selected), ...customSizes].map(e => ({ "scale": e.scale, "use_ai": e.needAI && e.useAI }));
 
     saveCache(resizeMode, sizes.filter((e) => e.selected), customSizes);
 
@@ -342,20 +344,32 @@ const ImageResizer = () => {
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement("a");
         a.href = url;
-        a.download = "images.zip";
+        const now = new Date();
+        a.download = `images-${now.getFullYear()}${now.getMonth()}${now.getDay()}${now.getHours()}${now.getMinutes()}${now.getSeconds()}.zip`;
         a.click();
         window.URL.revokeObjectURL(url);
+
+        if (!allfree && userInfo) {
+          const useAICount = total.filter(e => e.use_ai).length;
+          costCredits(userInfo, setUserInfo, useAICount);
+        }
+
       });
     } else {
 
       if (res.status == 401) {
         setShowLoginPanel(true);
-        return;
+      } else if (res.status == 451) {
+        setSubmitErrorShow(true);
+        res.text().then(r => {
+          setSubmitErrorMsg(r);
+        })
+      } else {
+        setSubmitErrorShow(true);
+        res.text().then(r => {
+          console.error(`Image Process Error, status = ${res.status}, message = ${r}`);
+        })
       }
-      setSubmitErrorShow(true);
-      res.text().then(r => {
-        console.error(`Image Process Error, status = ${res.status}, message = ${r}`);
-      })
     }
     setIsSubmitting(false);
 
@@ -542,11 +556,19 @@ const ImageResizer = () => {
             </div>
           )}
 
-          {submitErrorShow && (
+          {submitErrorShow && submitErrorMsg && (
+            <div className="text-red-500 text-xl text-center">
+              {submitErrorMsg}
+            </div>
+          )}
+
+          {submitErrorShow && !submitErrorMsg && (
             <div className="text-red-500 text-xl text-center">
               Image Resize Error, Please Contact Our Team
             </div>
           )}
+
+
         </div>
       </div>
     </section>

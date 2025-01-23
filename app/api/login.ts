@@ -1,36 +1,52 @@
-import { useEffect } from "react";
 import { base_url } from "./base";
-import { loginStore, UserInfo } from "@/store/LoginStore";
+import { UserInfo } from "@/store/LoginStore";
 
 interface LoginResponse {
+  token: string;
+  meta: UserMeta;
+}
+
+interface UserMeta {
   username: string;
   email: string;
-  token: string;
+  picture: string | null;
+  credits: number;
   exp: number;
 }
+
 const USER_INFO_CACHE_KEY = "userInfo";
 
 export function getToken(): string | null {
   const info = localStorage?.getItem(USER_INFO_CACHE_KEY);
   if (info) {
-    const userInfo = JSON.parse(info) as LoginResponse;
-    if (expValid(userInfo.exp)) {
-      return userInfo.token;
+    const resp = JSON.parse(info) as LoginResponse;
+    if (expValid(resp.meta.exp)) {
+      return resp.token;
     }
   }
 
   return null;
 }
-export async function login(token: string): Promise<boolean> {
+export async function login(
+  token: string,
+  setUserInfo: (info: UserInfo | null) => void
+): Promise<boolean> {
   const resp = await fetch(`${base_url}/login?token=${token}`);
 
   if (resp.status === 200) {
     const data = (await resp.json()) as LoginResponse;
 
-    const { setUserInfo } = loginStore();
+    console.log(data);
 
-    setUserInfo(data);
+    setUserInfo(data.meta);
     localStorage?.setItem(USER_INFO_CACHE_KEY, JSON.stringify(data));
+
+    const authResp = await fetch(`${base_url}/hello_auth`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${data.token}`,
+      },
+    });
 
     return true;
   }
@@ -38,21 +54,43 @@ export async function login(token: string): Promise<boolean> {
   return false;
 }
 
+export function costCredits(
+  userInfo: UserInfo,
+  setUserInfo: (info: UserInfo | null) => void,
+  credits: number
+) {
+  userInfo.credits -= credits;
+
+  setUserInfo(userInfo);
+
+  localStorage?.setItem(USER_INFO_CACHE_KEY, JSON.stringify(userInfo));
+}
+
 export function loadFromCache(setUserInfo: (info: UserInfo) => void) {
   const info = localStorage?.getItem(USER_INFO_CACHE_KEY);
   if (info) {
-    const userInfo = JSON.parse(info) as LoginResponse;
+    const respCache = JSON.parse(info) as LoginResponse;
 
-    if (expValid(userInfo.exp)) {
-      localStorage?.removeItem(USER_INFO_CACHE_KEY);
+    if (expValid(respCache.meta.exp)) {
+      setUserInfo(respCache.meta);
+      return true;
     } else {
-      setUserInfo(userInfo);
+      localStorage?.removeItem(USER_INFO_CACHE_KEY);
     }
   }
+
+  return false;
+}
+
+export function logout(setUserInfo: (info: UserInfo | null) => void) {
+  setUserInfo(null);
+  localStorage?.removeItem(USER_INFO_CACHE_KEY);
 }
 
 function expValid(exp: number) {
   const currentTime = Math.floor(Date.now() / 1000);
+
+  console.log("exp: ", exp, "currentTime: ", currentTime);
 
   return exp > currentTime;
 }

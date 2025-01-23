@@ -2,28 +2,40 @@
 
 import React from 'react';
 import { loginStore } from '@/store/LoginStore';
+import { logout } from '../api/login';
 
 const LoginButton = () => {
 
 
-  const { setShowLoginPanel, isLogin, userInfo, setUserInfo } = loginStore();
+  const { setShowLoginPanel, userInfo, setUserInfo } = loginStore();
   const handleLoginClick = () => {
     setShowLoginPanel(true);
   };
 
   const handleLogout = () => {
-    setUserInfo(null);
+    logout(setUserInfo);
   };
 
   return (
     <>
-      {isLogin ? (
+      {userInfo ? (
         <div className="flex items-center space-x-4   pl-4 pr-2 py-1">
           <div className="flex items-center space-x-2">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
-              <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
-            </svg>
-            <span className="text-gray-100 font-medium">{userInfo?.username}</span>
+            {
+              userInfo?.picture ? (
+                <img src={userInfo?.picture} alt="User Avatar" className="w-10 h-10 rounded-full cursor-pointer" title={userInfo?.username} />
+              ) : (
+                <>
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
+                  </svg>
+                  <span className="text-gray-100 font-medium">{userInfo?.username}</span>
+                </>
+              )
+            }
+
+            <span className="text-gray-300">credits: {userInfo?.credits}</span>
+
           </div>
           <button
             onClick={handleLogout}
