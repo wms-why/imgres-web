@@ -18,9 +18,9 @@ export default function CheckOutContent() {
     setCheckoutData(event);
   };
 
-  const { isLogin, setShowLoginPanel, userInfo } = loginStore();
+  const { setShowLoginPanel, userInfo } = loginStore();
 
-  if (!isLogin) {
+  if (!userInfo) {
     setShowLoginPanel(true);
   }
 
