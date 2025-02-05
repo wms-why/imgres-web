@@ -72,7 +72,7 @@ export default function PricingPage() {
 
           <h3 className="text-2xl font-semibold mb-2">Subscription Plan for Year</h3>
           <div className="text-3xl font-bold mb-6">
-            US$ 0.015
+            US$ {subscriptionCredits.find(c => c.id === selectedSubscriptionId)?.pricePerCredit.toFixed(3)}
             <span className="text-sm font-normal text-gray-500"> / Credit</span>
           </div>
 
