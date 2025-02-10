@@ -41,13 +41,6 @@ export async function login(
     setUserInfo(data.meta);
     localStorage?.setItem(USER_INFO_CACHE_KEY, JSON.stringify(data));
 
-    const authResp = await fetch(`${base_url}/hello_auth`, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${data.token}`,
-      },
-    });
-
     return true;
   }
 

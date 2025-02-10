@@ -1,16 +1,10 @@
 'use client'
 import { loginStore } from "@/store/LoginStore";
 import { CheckoutEventsData, Environments, initializePaddle, Paddle } from "@paddle/paddle-js";
-import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
-interface PathParams {
-  priceId: string;
-  [key: string]: string | string[];
-}
 
-export default function CheckOutContent() {
-  const { priceId } = useParams<PathParams>();
+export default function CheckOutContent({ priceId }: Readonly<{ priceId: string }>) {
   const [paddle, setPaddle] = useState<Paddle | null>(null);
   const [checkoutData, setCheckoutData] = useState<CheckoutEventsData | null>(null);
 
