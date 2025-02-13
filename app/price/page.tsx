@@ -97,7 +97,7 @@ export default function PricingPage() {
                     <div className="text-sm text-gray-500">US${plan.pricePerCredit.toFixed(3)} / Credit</div>
                   </div>
                 </div>
-                <div className="font-semibold">US${plan.price}</div>
+                <div className="font-semibold">US${plan.price} / Year</div>
               </label>
             ))}
           </div>
@@ -120,7 +120,7 @@ export default function PricingPage() {
                 <svg className="w-5 h-5 text-green-500 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
-                New credits will be issued to your account each month on the day you subscribe.
+                The fee is charged once a year, and new credits will be issued to your account each month on the day you subscribe.
               </li>
             </ul>
           </div>

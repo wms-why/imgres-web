@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { ResizeMode } from "./ResizeModeSelector";
 
 interface Size {
   input: number;
@@ -12,30 +13,23 @@ const sizeKey = "sizeKey";
 const customSizeKey = "customSizeKey";
 
 export function save(
-  resizeMode: "width" | "height" | null,
+  resizeMode: ResizeMode,
   sizes: Size[],
   customSizes: Size[]
 ) {
-    if (resizeMode) {
-      localStorage?.setItem(resizeModeKey, resizeMode);
-    }
-    if (sizes) {
-      localStorage?.setItem(sizeKey, JSON.stringify(sizes));
-    }
+  if (resizeMode) {
+    localStorage?.setItem(resizeModeKey, resizeMode);
+  }
+  if (sizes) {
+    localStorage?.setItem(sizeKey, JSON.stringify(sizes));
+  }
 
-    if (customSizes) {
-      localStorage?.setItem(customSizeKey, JSON.stringify(customSizes));
-    }
+  if (customSizes) {
+    localStorage?.setItem(customSizeKey, JSON.stringify(customSizes));
+  }
 }
-
-export function get(): {
-  resizeMode: "width" | "height" | null;
-  sizes: Size[];
-  customSizes: Size[];
-} {
-  const [resizeMode, setResizeMode] = useState<"width" | "height" | null>(null);
-  const [sizes, setSizes] = useState<Size[]>([]);
-  const [customSizes, setCustomSizes] = useState<Size[]>([]);
+export const getMode = () => {
+  const [resizeMode, setResizeMode] = useState<ResizeMode | null>(null);
 
   useEffect(() => {
     let resizeMode = localStorage?.getItem(resizeModeKey);
@@ -43,18 +37,31 @@ export function get(): {
       resizeMode = null;
     }
     setResizeMode(resizeMode);
+  }, []);
 
+  return resizeMode;
+};
+
+export function getSizes() {
+  const [sizes, setSizes] = useState<Size[]>([]);
+
+  useEffect(() => {
     let sizesStr = localStorage?.getItem(sizeKey);
     const sizes = sizesStr ? JSON.parse(sizesStr) : [];
     setSizes(sizes);
+  }, []);
+
+  return sizes;
+}
+
+export function getCustomSizes() {
+  const [customSizes, setCustomSizes] = useState<Size[]>([]);
+
+  useEffect(() => {
     let customSizesStr = localStorage?.getItem(customSizeKey);
     const customSizes = customSizesStr ? JSON.parse(customSizesStr) : [];
     setCustomSizes(customSizes);
   }, []);
 
-  return {
-    resizeMode,
-    sizes,
-    customSizes,
-  };
+  return customSizes;
 }
