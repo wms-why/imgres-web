@@ -29,7 +29,7 @@ const Header = () => {
             <a href="/price" className="text-gray-300 hover:text-white transition-colors">Price</a>
           </div>
           <div className="hidden md:flex items-center space-x-8">
-            <LoginButton />
+            {/* <LoginButton /> */}
           </div>
         </div>
       </nav>
